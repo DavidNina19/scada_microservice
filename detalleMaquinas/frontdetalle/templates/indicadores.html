@@ -1,0 +1,24 @@
+<div id="contenedor_on" class="col position-absolute top-0 bg-success fw-bold rounded rounded-2 text-white text-center px-3 d-flex flex-column">
+    <span id="hencendido">h..</span>
+    <span>ON:</span>
+</div>
+<div id="contenedor_off" class="col position-absolute bottom-0 bg-danger fw-bold rounded rounded-2 text-white text-center px-3 d-flex flex-column">
+    <span>OFF:</span> 
+    <span id="hapagado">h..</span>
+</div>
+<div class="col position-absolute top-0 end-0 bg-white border border-2 border-dark fw-bold rounded rounded-2 text-center px-3">
+    <span>Conteo:</span> 
+    <span id="acumulado">...</span>
+</div>
+<script>
+    function horasEncendido(horasEncendidoData, acumulado) {
+        const hencendido = document.getElementById('hencendido');
+        const hapagado = document.getElementById('hapagado');     
+        const element_acumulado = document.getElementById('acumulado');       
+
+        const { horas_encendidas, horas_apagadas } = horasEncendidoData;
+        hencendido.innerHTML = horas_encendidas+" h.";
+        hapagado.innerHTML = horas_apagadas+" h.";
+        element_acumulado.innerHTML = acumulado;
+    }
+</script>

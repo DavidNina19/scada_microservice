@@ -1,0 +1,74 @@
+<script>
+    // Objeto global para almacenar todas las instancias de gráficos, indexadas por su ID de canvas
+    // Esto asegura que cada gráfico pueda ser accedido y destruido individualmente
+    window.chartInstances = window.chartInstances || {}; 
+
+    // Función para crear o actualizar un gráfico de barras específico
+    function createBarChart(valor1, valor2, valor3, canvasId) {
+        const ctx = document.getElementById(canvasId);
+
+        // Si el canvas no existe, salimos de la función
+        if (!ctx) {
+            console.error(`Canvas con ID '${canvasId}' no encontrado.`);
+            return;
+        }
+
+        const context = ctx.getContext('2d');
+
+        // Si ya existe un gráfico para este canvasId, lo destruimos antes de crear uno nuevo
+        if (window.chartInstances[canvasId]) {
+            window.chartInstances[canvasId].destroy();
+        }
+
+        // Creamos una nueva instancia del gráfico y la almacenamos en nuestro objeto global
+        window.chartInstances[canvasId] = new Chart(context, {
+            type: 'bar',
+            data: {
+                labels: ['SUM', '230', '460'],
+                datasets: [{
+                    label: 'Valores',
+                    data: [valor1, valor2, valor3],
+                    backgroundColor: [
+                        'rgba(25, 148, 121, 0.9)', // Color para SUM
+                        'rgba(239, 207, 79, 0.9)', // Color para 230
+                        'rgba(71, 70, 78, 0.9)'    // Color para 460
+                    ],
+                    borderColor: [
+                        'rgb(25, 148, 121)',
+                        'rgb(239, 207, 79)',
+                        'rgb(71, 70, 78)'
+                    ],
+                    borderWidth: 1,
+                    borderRadius : 5
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        display: false, // Ocultar el eje Y y su cuadrícula
+                        grid: { 
+                            display: false,
+                            drawBorder: false,
+                            drawTicks: false
+                        }
+                    },
+                    x: {
+                        grid: { // Configuración de la cuadrícula para el eje X
+                            display: false, // Elimina las líneas verticales
+                            drawBorder: false, // Elimina el borde del eje
+                            drawTicks: false // Elimina las marcas del eje
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false // Ocultar la leyenda
+                    }
+                }
+            }
+        });
+    }
+</script>

@@ -1,0 +1,18 @@
+<script>
+    // Asegúrate de que esta función está disponible en el ámbito global o común
+    function horasEncendido(horasEncendidoData, acumulado, machineDisplayId, horasTrabaData, cantidadStd) { // Añade machineDisplayId
+        const hencendido = document.getElementById(`hencendido_${machineDisplayId}`);
+        const hapagado = document.getElementById(`hapagado_${machineDisplayId}`);
+        const element_acumulado = document.getElementById(`acumulado_${machineDisplayId}`);
+        const element_rend = document.getElementById(`rend_${machineDisplayId}`);
+        const { horas_trabajadas, horas_no_trabajadas } = horasTrabaData
+        const rend = ((acumulado/(cantidadStd*horas_trabajadas))*100).toFixed(1)
+        const rendimiento = isFinite(rend) ? rend : 0
+        const { horas_encendidas, horas_apagadas } = horasEncendidoData;
+
+        if (hencendido) hencendido.innerHTML = horas_encendidas + " h.";
+        if (hapagado) hapagado.innerHTML = horas_apagadas + " h.";
+        if (element_acumulado) element_acumulado.innerHTML = acumulado;
+        if (element_rend) element_rend.innerHTML = rendimiento+"%";
+    }
+</script>

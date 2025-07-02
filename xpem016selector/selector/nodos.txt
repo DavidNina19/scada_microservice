@@ -1,0 +1,47 @@
+Emerg. Act.,ns=4;i=18
+Sobrecarga de Motores,ns=4;i=126
+MIN_Salida_Reg_Gas_Horno,ns=4;i=73
+SFE1_Presencia_de_Tocho,ns=4;i=123
+Acum_Tochos_horno,ns=4;i=3
+MAX_Salida_Reg_Gas_Horno,ns=4;i=72
+SAL_ALIM_TOCHOS,ns=4;i=101
+Motor M1 K1,ns=4;i=74
+Conexion Triangulo K3,ns=4;i=12
+EV_FRENO_MOTOR_PRINCIPAL,ns=4;i=23
+Ciclo. Auto. Act.,ns=4;i=10
+Ciclo Man. Act.,ns=4;i=8
+Ciclo Semi-Auto,ns=4;i=9
+M2 Asciende,ns=4;i=38
+M2 Desciende,ns=4;i=39
+EV. MARTILLO,ns=4;i=22
+MARCA_Manual EV. Martillo,ns=4;i=57
+Martillo_Desciende_Semiautomatico,ns=4;i=71
+Martillo_Asciende_semiautomatico,ns=4;i=69
+EV. Brazo_NEUMATICO,ns=4;i=21
+EV. Botador,ns=4;i=20
+Marca_Brazo_Neumatico_Manual,ns=4;i=47
+Marca Botador Manual,ns=4;i=40
+Marca_brazo_Neumatico_semiauto-Automatico,ns=4;i=48
+Marca_Bot_SemiAuto,ns=4;i=45
+EV_Piston_Pulv.,ns=4;i=24
+EV_Pulverizador,ns=4;i=25
+Marca_Pist_Pulv_Man,ns=4;i=58
+Marca_Pulv_Man,ns=4;i=60
+Marca_Piston_Pulv_Semiauto,ns=4;i=59
+Marca_Pulv_SemiAuto,ns=4;i=61
+Conteo_Piezas_Term,ns=4;i=15
+Iniciar_Programa_(RunScript),ns=4;i=35
+RUN_ROBOT_SECUENCIA_TRABAJO,ns=4;i=99
+RUN_ROBOT_SECUENCIA_RECHAZO,ns=4;i=98
+Salida_STOP_Robot,ns=4;i=105
+Martillo_Asciende_Automatico,ns=4;i=68
+Martillo_Asciende_Automatico,ns=4;i=68
+Conteo_Scada,ns=4;i=16
+Marca_Falla_Salida_Valvula,ns=4;i=52
+ALARMA_VALVULA_ATASCADA_MATRIZ,ns=4;i=7
+SALIDA_ALARMAS,ns=4;i=103
+SIST_MARCHA_BALIZA,ns=4;i=125
+SALIDA_PUESTA_PUNTO,ns=4;i=104
+SAL_CONTROL_TEMP,ns=4;i=102
+Reset_Falla_Flama,ns=4;i=94
+Alarma_Ausencia_tochos,ns=4;i=4

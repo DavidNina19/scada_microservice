@@ -1,0 +1,288 @@
+
+<body>
+    <select id="codmaq" name="codmaq" class="form-select mb-3">
+    </select>
+</body>
+<script>
+    //async function leerURL() {
+    //try {
+    //    const response = await fetch('http://192.168.252.35:5000/nameMachine');
+    //    if (!response.ok) {
+    //        throw new Error(`Error en la solicitud: ${response.status}`);
+    //    }
+    //    const datos = await response.json(); // Si esperas JSON, ajusta según el formato esperado
+    //    identificarMaquina(datos);
+    //} catch (error) {
+    //    console.error(`Error al leer la URL:`, error);
+    //}
+    //}
+
+    function identificarMaquina() {
+        const datos = {
+            "PRODUCCION FORJA": {
+                "sub_areas": [
+                {
+                    "prensa friccion": [
+                    "PFR 005E.ON",
+                    "PFR 003E.ON",
+                    "PFR 001E.ON"
+                    ]
+                },
+                {
+                    "prensa troquelada": [
+                    "PEM 009E.ON",
+                    "PEM 007E.ON"
+                    ]
+                },
+                {
+                    "forjado": [
+                    "PEM 015E.ON",
+                    "PEM 016E.ON"
+                    ]
+                }
+                ]
+            },
+            "PRODUCCION LLAVES": {
+                "sub_areas": [
+                {
+                    "troquealado": [
+                    "PEN 004E.ON",
+                    "PEH 001E.ON"
+                    ]
+                },
+                {
+                    "fresado": [
+                    "FAL 016E.ON",
+                    "FAL 010E.ON",
+                    "FAL 009E.ON",
+                    "FAL 007E.ON",
+                    "FAL 008E.ON",
+                    "FAL 015E.ON",
+                    "FAL 014E.ON"
+                    ]
+                },
+                {
+                    "perforado": [
+                    "PEM 017E.ON",
+                    "PEM 018E.ON"
+                    ]
+                },
+                {
+                    "estampado": [
+                    "PHE 004E.ON",
+                    "PHE 005E.ON",
+                    "PHE 002E.ON"
+                    ]
+                },
+                {
+                    "dorsado": [
+                    "DOL 002E.ON"
+                    ]
+                }
+                ]
+            },
+            "PRODUCCION MAESTRANZA": {
+                "sub_areas": [
+                {
+                    "torno": [
+                    "TPA 013E.ON",
+                    "TPA 004E.ON",
+                    "TPA 008E.ON",
+                    "TPA 011E.ON",
+                    "TPA 002E.ON"
+                    ]
+                },
+                {
+                    "fresadoras": [
+                    "FUM 002E.ON",
+                    "FUM 003E.ON"
+                    ]
+                },
+                {
+                    "maq.convecional": [
+                    "AFU 002E.ON",
+                    "REP 002E.ON",
+                    "REP 001E.ON"
+                    ]
+                }
+                ]
+            },
+            "PRODUCCION SERIADA": {
+                "sub_areas": [
+                {
+                    "multihusillo": [
+                    "TCN 016E.ON",
+                    "TAM 001E.ON",
+                    "TAM 003E.ON",
+                    "TAM 002E.ON",
+                    "TPA 015E.ON",
+                    "TAM 009E.ON",
+                    "TAM 008E.ON"
+                    ]
+                },
+                {
+                    "t.automatico": [
+                    "TAU 018E.ON",
+                    "TAU 001E.ON",
+                    "TAU 019E.ON"
+                    ]
+                },
+                {
+                    "prensas": [
+                    "PNV 004E.ON",
+                    "PHV 002E.ON",
+                    "PEM 001E.ON",
+                    "PHV 003E.ON",
+                    "PEN 001E.ON",
+                    "PEM 002E.ON",
+                    "PNV 001E.ON",
+                    "PEN 002E.ON",
+                    "PHV 001E.ON",
+                    "PEM 003E.ON",
+                    "PNV 002E.ON",
+                    "PEM 004E.ON"
+                    ]
+                },
+                {
+                    "t.cnc": [
+                    "TCN 013E.ON",
+                    "TCN 010E.ON",
+                    "TCN 009E.ON",
+                    "TCN 001E.ON",
+                    "TCN 014E.ON",
+                    "TCN 015E.ON",
+                    "TCN 011E.ON"
+                    ]
+                },
+                {
+                    "taladro": [
+                    "TRO 005E.ON",
+                    "TVN 002E.ON",
+                    "TAC 001E.ON",
+                    "TRO 004E.ON",
+                    "TAC 002E.ON",
+                    "TRO 003E.ON",
+                    "TAF 003E.ON",
+                    "COA 001E.ON",
+                    "TAB 006E.ON",
+                    "TAC 005E.ON"
+                    ]
+                },
+                {
+                    "revolver": [
+                    "TRE 010E.ON",
+                    "TRE 004E.ON",
+                    "TRE 002E.ON"
+                    ]
+                },
+                {
+                    "t.semiautomatico": [
+                    "TSA 002E.ON",
+                    "TSA 001E.ON",
+                    "TSA 003E.ON"
+                    ]
+                },
+                {
+                    "transfers": [
+                    "TTH 004E.ON",
+                    "TTV 003E.ON",
+                    "TTH 005E.ON",
+                    "TTV 001E.ON",
+                    "TTH 001E.ON",
+                    "TTV 002E.ON",
+                    "TTH 002E.ON"
+                    ]
+                }
+                ]
+            }
+            };
+            // Obtener el elemento select
+            const selectElement = document.getElementById('area');
+            // Agregar un listener para el evento change
+            // Obtener el valor seleccionado y mostrarlo en consola
+            const areaSelect = selectElement.value;
+            //console.log("Valor seleccionado:", areaSelect);
+    
+            // Obtener las sub-áreas correspondientes al área seleccionada
+            const dataGeneral = datos['PRODUCCION FORJA']['sub_areas'];
+            const selectCodmaq = document.getElementById('codmaq');
+    
+            // Verificar si ya se han cargado las opciones para evitar limpiar innecesariamente
+            if (selectCodmaq.getAttribute('data-last-area') === areaSelect) {
+                console.log("El área seleccionada no ha cambiado, no se actualizan las opciones.");
+                return;
+            }
+    
+            // Actualizar el atributo para rastrear el área seleccionada
+            selectCodmaq.setAttribute('data-last-area', areaSelect);
+    
+            // Limpiar las opciones existentes
+            selectCodmaq.innerHTML = '';
+    
+            // Crear las opciones de máquinas basadas en el área seleccionada
+            dataGeneral.forEach(subArea => {
+                const areaName = Object.keys(subArea)[0]; // Obtener el nombre del área
+                const machines = subArea[areaName]; // Obtener los códigos de las máquinas
+    
+                // Crear un grupo de opciones para cada área
+                const optgroup = document.createElement('optgroup');
+                optgroup.label = areaName;
+                selectCodmaq.appendChild(optgroup);
+    
+                machines.forEach(machine => {
+                    const option = document.createElement('option');
+    
+                    // Separar el código y extraer la parte antes del punto
+                    const codigoSinExtension = machine.split('.')[0];
+    
+                    option.value = codigoSinExtension;
+                    option.textContent = codigoSinExtension;
+                    optgroup.appendChild(option);
+                });
+            });
+    selectElement.addEventListener('change', () => {
+        // Obtener el valor seleccionado y mostrarlo en consola
+        const areaSelect = selectElement.value;
+        console.log("Valor seleccionado:", areaSelect);
+
+        // Obtener las sub-áreas correspondientes al área seleccionada
+        const dataGeneral = datos[areaSelect]['sub_areas'];
+        const selectCodmaq = document.getElementById('codmaq');
+
+        // Verificar si ya se han cargado las opciones para evitar limpiar innecesariamente
+        if (selectCodmaq.getAttribute('data-last-area') === areaSelect) {
+            console.log("El área seleccionada no ha cambiado, no se actualizan las opciones.");
+            return;
+        }
+
+        // Actualizar el atributo para rastrear el área seleccionada
+        selectCodmaq.setAttribute('data-last-area', areaSelect);
+
+        // Limpiar las opciones existentes
+        selectCodmaq.innerHTML = '';
+
+        // Crear las opciones de máquinas basadas en el área seleccionada
+        dataGeneral.forEach(subArea => {
+            const areaName = Object.keys(subArea)[0]; // Obtener el nombre del área
+            const machines = subArea[areaName]; // Obtener los códigos de las máquinas
+
+            // Crear un grupo de opciones para cada área
+            const optgroup = document.createElement('optgroup');
+            optgroup.label = areaName;
+            selectCodmaq.appendChild(optgroup);
+
+            machines.forEach(machine => {
+                const option = document.createElement('option');
+
+                // Separar el código y extraer la parte antes del punto
+                const codigoSinExtension = machine.split('.')[0];
+
+                option.value = codigoSinExtension;
+                option.textContent = codigoSinExtension;
+                optgroup.appendChild(option);
+            });
+        });
+    });
+}
+
+</script>

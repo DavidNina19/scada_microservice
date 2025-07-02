@@ -1,0 +1,266 @@
+# docker-compose.yml
+# La línea 'version: '3.8'' ha sido eliminada para evitar la advertencia de obsolescencia.
+
+services:
+  # El servicio 'db' ha sido eliminado porque tu base de datos es externa.
+  # Si lo tenías, asegúrate de que no esté presente o que esté comentado.
+
+  ctoacumulado: # O 'ctoacumulado' si prefieres ese nombre
+    build:
+      context: ./ctoacumulado # Asegúrate que esta es la ruta a tu proyecto Django
+    ports:
+      - "8001:8000" # Mapea el puerto 8000 del contenedor al 8001 de tu host
+    volumes:
+      - ./ctoacumulado:/app # Monta tu código para desarrollo
+    # 'depends_on' ya no es necesario si no dependes de un servicio local de DB
+    environment:
+      - DB_HOST=192.168.252.35 # Apunta a tu IP de base de datos externa
+      - DB_PORT=3306       # Apunta al puerto de tu base de datos externa
+      - DB_NAME=data_scada
+      - DB_USER=LABTI
+      - DB_PASSWORD=ScadaEMEMSA40
+    command: python manage.py runserver 0.0.0.0:8000
+    networks:
+      - app_network
+  
+  produccionhora: # O 'produccionhora' si prefieres ese nombre
+    build:
+      context: ./produccionhora # Asegúrate que esta es la ruta a tu proyecto Django
+    ports:
+      - "8002:8000" # Mapea el puerto 8000 del contenedor al 8001 de tu host
+    volumes:
+      - ./produccionhora:/app # Monta tu código para desarrollo
+    # 'depends_on' ya no es necesario si no dependes de un servicio local de DB
+    environment:
+      - DB_HOST=192.168.252.35 # Apunta a tu IP de base de datos externa
+      - DB_PORT=3306       # Apunta al puerto de tu base de datos externa
+      - DB_NAME=data_scada
+      - DB_USER=LABTI
+      - DB_PASSWORD=ScadaEMEMSA40
+    command: python manage.py runserver 0.0.0.0:8000
+    networks:
+      - app_network
+  
+  horastraba: # O 'horastraba' si prefieres ese nombre
+    build:
+      context: ./horastraba # Asegúrate que esta es la ruta a tu proyecto Django
+    ports:
+      - "8003:8000" # Mapea el puerto 8000 del contenedor al 8001 de tu host
+    volumes:
+      - ./horastraba:/app # Monta tu código para desarrollo
+    # 'depends_on' ya no es necesario si no dependes de un servicio local de DB
+    environment:
+      - DB_HOST=192.168.252.35 # Apunta a tu IP de base de datos externa
+      - DB_PORT=3306       # Apunta al puerto de tu base de datos externa
+      - DB_NAME=data_scada
+      - DB_USER=LABTI
+      - DB_PASSWORD=ScadaEMEMSA40
+    command: python manage.py runserver 0.0.0.0:8000
+    networks:
+      - app_network
+
+  enceapagado: # O 'enceapagado' si prefieres ese nombre
+    build:
+      context: ./enceapagado # Asegúrate que esta es la ruta a tu proyecto Django
+    ports:
+      - "8004:8000" # Mapea el puerto 8000 del contenedor al 8001 de tu host
+    volumes:
+      - ./enceapagado:/app # Monta tu código para desarrollo
+    # 'depends_on' ya no es necesario si no dependes de un servicio local de DB
+    environment:
+      - DB_HOST=192.168.252.35 # Apunta a tu IP de base de datos externa
+      - DB_PORT=3306       # Apunta al puerto de tu base de datos externa
+      - DB_NAME=data_scada
+      - DB_USER=LABTI
+      - DB_PASSWORD=ScadaEMEMSA40
+    command: python manage.py runserver 0.0.0.0:8000
+    networks:
+      - app_network
+
+  horasencendido: # O 'horasencendido' si prefieres ese nombre
+    build:
+      context: ./horasencendido # Asegúrate que esta es la ruta a tu proyecto Django
+    ports:
+      - "8005:8000" # Mapea el puerto 8000 del contenedor al 8001 de tu host
+    volumes:
+      - ./horasencendido:/app # Monta tu código para desarrollo
+    # 'depends_on' ya no es necesario si no dependes de un servicio local de DB
+    environment:
+      - DB_HOST=192.168.252.35 # Apunta a tu IP de base de datos externa
+      - DB_PORT=3306       # Apunta al puerto de tu base de datos externa
+      - DB_NAME=data_scada
+      - DB_USER=LABTI
+      - DB_PASSWORD=ScadaEMEMSA40
+    command: python manage.py runserver 0.0.0.0:8000
+    networks:
+      - app_network
+
+  generaldata: # O 'generaldata' si prefieres ese nombre
+    build:
+      context: ./generaldata # Asegúrate que esta es la ruta a tu proyecto Django
+    ports:
+      - "8006:8000" # Mapea el puerto 8000 del contenedor al 8001 de tu host
+    volumes:
+      - ./generaldata:/app # Monta tu código para desarrollo
+    # 'depends_on' ya no es necesario si no dependes de un servicio local de DB
+    environment:
+      - DB_HOST=192.168.252.35 # Apunta a tu IP de base de datos externa
+      - DB_PORT=3306       # Apunta al puerto de tu base de datos externa
+      - DB_NAME=data_scada
+      - DB_USER=LABTI
+      - DB_PASSWORD=ScadaEMEMSA40
+    command: python manage.py runserver 0.0.0.0:8000
+    networks:
+      - app_network
+
+  detallemaquinas: # O 'detallemaquinas' si prefieres ese nombre
+    build:
+      context: ./detallemaquinas # Asegúrate que esta es la ruta a tu proyecto Django
+    ports:
+      - "5010:8000" # Mapea el puerto 8000 del contenedor al 8001 de tu host
+    volumes:
+      - ./detallemaquinas:/app # Monta tu código para desarrollo
+    # 'depends_on' ya no es necesario si no dependes de un servicio local de DB
+    environment:
+      - DB_HOST=192.168.252.35 # Apunta a tu IP de base de datos externa
+      - DB_PORT=3306       # Apunta al puerto de tu base de datos externa
+      - DB_NAME=data_scada
+      - DB_USER=LABTI
+      - DB_PASSWORD=ScadaEMEMSA40
+    command: python manage.py runserver 0.0.0.0:8000
+    networks:
+      - app_network
+
+  maquinascriticas: # O 'maquinascriticas' si prefieres ese nombre
+    build:
+      context: ./maquinascriticas # Asegúrate que esta es la ruta a tu proyecto Django
+    ports:
+      - "5011:8000" # Mapea el puerto 8000 del contenedor al 8001 de tu host
+    volumes:
+      - ./maquinascriticas:/app # Monta tu código para desarrollo
+    # 'depends_on' ya no es necesario si no dependes de un servicio local de DB
+    environment:
+      - DB_HOST=192.168.252.35 # Apunta a tu IP de base de datos externa
+      - DB_PORT=3306       # Apunta al puerto de tu base de datos externa
+      - DB_NAME=data_scada
+      - DB_USER=LABTI
+      - DB_PASSWORD=ScadaEMEMSA40
+    command: python manage.py runserver 0.0.0.0:8000
+    networks:
+      - app_network
+
+  detallecircutor: # O 'detallecircutor' si prefieres ese nombre
+    build:
+      context: ./detallecircutor # Asegúrate que esta es la ruta a tu proyecto Django
+    ports:
+      - "5012:8000" # Mapea el puerto 8000 del contenedor al 8001 de tu host
+    volumes:
+      - ./detallecircutor:/app # Monta tu código para desarrollo
+    # 'depends_on' ya no es necesario si no dependes de un servicio local de DB
+    environment:
+      - DB_HOST=192.168.252.35 # Apunta a tu IP de base de datos externa
+      - DB_PORT=3306       # Apunta al puerto de tu base de datos externa
+      - DB_NAME=data_scada
+      - DB_USER=LABTI
+      - DB_PASSWORD=ScadaEMEMSA40
+    command: python manage.py runserver 0.0.0.0:8000
+    networks:
+      - app_network
+  
+  opcuapex: # O 'opcuapex' si prefieres ese nombre
+    build:
+      context: ./opcuapex # Asegúrate que esta es la ruta a tu proyecto Django
+    ports:
+      - "8007:8000" # Mapea el puerto 8000 del contenedor al 8001 de tu host
+    volumes:
+      - ./opcuapex:/app # Monta tu código para desarrollo
+    # 'depends_on' ya no es necesario si no dependes de un servicio local de DB
+    environment:
+      - DB_HOST=192.168.252.35 # Apunta a tu IP de base de datos externa
+      - DB_PORT=3306       # Apunta al puerto de tu base de datos externa
+      - DB_NAME=data_scada
+      - DB_USER=LABTI
+      - DB_PASSWORD=ScadaEMEMSA40
+    command: python manage.py runserver 0.0.0.0:8000
+    networks:
+      - app_network
+
+  xpem016selector: # O 'xpem016selector' si prefieres ese nombre
+    build:
+      context: ./xpem016selector # Asegúrate que esta es la ruta a tu proyecto Django
+    ports:
+      - "8008:8000" # Mapea el puerto 8000 del contenedor al 8001 de tu host
+    volumes:
+      - ./xpem016selector:/app # Monta tu código para desarrollo
+    # 'depends_on' ya no es necesario si no dependes de un servicio local de DB
+    environment:
+      - DB_HOST=192.168.252.35 # Apunta a tu IP de base de datos externa
+      - DB_PORT=3306       # Apunta al puerto de tu base de datos externa
+      - DB_NAME=data_scada
+      - DB_USER=LABTI
+      - DB_PASSWORD=ScadaEMEMSA40
+    command: python manage.py runserver 0.0.0.0:8000
+    networks:
+      - app_network
+
+  zcostoacumulativo: # O 'zcostoAcumulativo' si prefieres ese nombre
+    build:
+      context: ./zcostoAcumulativo # Asegúrate que esta es la ruta a tu proyecto Django
+    ports:
+      - "8009:8000" # Mapea el puerto 8000 del contenedor al 8001 de tu host
+    volumes:
+      - ./zcostoAcumulativo:/app # Monta tu código para desarrollo
+    # 'depends_on' ya no es necesario si no dependes de un servicio local de DB
+    environment:
+      - DB_HOST=192.168.252.35 # Apunta a tu IP de base de datos externa
+      - DB_PORT=3306       # Apunta al puerto de tu base de datos externa
+      - DB_NAME=conecction
+      - DB_USER=LABTI
+      - DB_PASSWORD=ScadaEMEMSA40
+    command: python manage.py runserver 0.0.0.0:8000
+    networks:
+      - app_network
+
+  zconsumomes: # O 'zconsumomes' si prefieres ese nombre
+    build:
+      context: ./zconsumoMes # Asegúrate que esta es la ruta a tu proyecto Django
+    ports:
+      - "8010:8000" # Mapea el puerto 8000 del contenedor al 8001 de tu host
+    volumes:
+      - ./zconsumoMes:/app # Monta tu código para desarrollo
+    # 'depends_on' ya no es necesario si no dependes de un servicio local de DB
+    environment:
+      - DB_HOST=192.168.252.35 # Apunta a tu IP de base de datos externa
+      - DB_PORT=3306       # Apunta al puerto de tu base de datos externa
+      - DB_NAME=conecction
+      - DB_USER=LABTI
+      - DB_PASSWORD=ScadaEMEMSA40
+    command: python manage.py runserver 0.0.0.0:8000
+    networks:
+      - app_network
+
+  zhistoricodia: # O 'zhistoricodia' si prefieres ese nombre
+    build:
+      context: ./zhistoricoDia # Asegúrate que esta es la ruta a tu proyecto Django
+    ports:
+      - "8011:8000" # Mapea el puerto 8000 del contenedor al 8001 de tu host
+    volumes:
+      - ./zhistoricoDia:/app # Monta tu código para desarrollo
+    # 'depends_on' ya no es necesario si no dependes de un servicio local de DB
+    environment:
+      - DB_HOST=192.168.252.35 # Apunta a tu IP de base de datos externa
+      - DB_PORT=3306       # Apunta al puerto de tu base de datos externa
+      - DB_NAME=conecction
+      - DB_USER=LABTI
+      - DB_PASSWORD=ScadaEMEMSA40
+    command: python manage.py runserver 0.0.0.0:8000
+    networks:
+      - app_network
+
+# El volumen 'mysql_data' ya no es necesario si no usas una base de datos local
+# volumes:
+#   mysql_data:
+
+networks:
+  app_network:
+    driver: bridge

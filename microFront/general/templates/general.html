@@ -1,0 +1,40 @@
+<div class="col-lg-3 col-12 order-2 shadow-lg p-3 mb-3 mt-lg-3 mb-lg-0 rounded rounded-2 bg-white">
+    <div class="row">
+        <div class="col-12">
+            <p class="fs-6 fw-bold">INFO. ORDEN</p>
+        </div>
+        <div class="col-12 col-lg-8">
+            <p class="bg-warning px-1 text-white rounded rounded-2"><b id="general_name"></b></p>
+        </div>
+        <div class="col-12 col-lg-4">
+            <p>Orden: <b id="general_orden"></b></p>
+        </div>
+        <div class="col-12 col-lg-8">
+            <p>Des. Ope: <b id="general_desOrden"></b></p>
+        </div>
+        <div class="col-12 col-lg-4">
+            <p>Cant. Ord: <b id="general_cantOrden"></b></p>
+        </div>
+        <div class="col-12">
+            <p>Operario: <b id="general_operario"></b></p>
+        </div>
+    </div>
+</div>
+
+<script>
+    function infoOrden(general) {
+    const general_name = document.getElementById('general_name');
+    const general_orden = document.getElementById('general_orden');
+    const general_desOrden = document.getElementById('general_desOrden');
+    const general_cantOrden = document.getElementById('general_cantOrden');
+    const general_operario = document.getElementById('general_operario');
+    const { nomMaquina, idNumOrd, cantidadOrden, desOperacion, operario } = general 
+
+    general_name.innerHTML = nomMaquina;
+    general_orden.innerHTML = idNumOrd;
+    general_cantOrden.innerHTML = cantidadOrden;
+    general_desOrden.innerHTML = desOperacion;
+    general_operario.innerHTML = operario;
+
+        }
+</script>

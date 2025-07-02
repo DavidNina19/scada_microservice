@@ -1,0 +1,15 @@
+<div class="col-6 fw-medium">
+    <span>Hoy</span> <br>
+    <span><span id="kwh_hoy" class="fs-3">- - </span><sub style="color: darkgray;"> kwh</sub></span><br>
+    <span><span>S/.</span><span id="soles_hoy">---</span><sub style="color: darkgray;"> soles</sub></span>
+</div>
+<script>
+    function indicador_kwh(sumakhw_hoy, kwh_230, kwh_460, PU, id_kwh, id_soles, id_chart) {
+        const kwh_hoy = document.getElementById(id_kwh)
+        const soles_hoy = document.getElementById(id_soles)
+        kwh_hoy.innerHTML = sumakhw_hoy
+        soles_hoy.innerHTML = ((sumakhw_hoy * PU)/1000).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+        // Generar grafico
+        createBarChart(sumakhw_hoy, kwh_230, kwh_460, id_chart);
+    }
+</script>

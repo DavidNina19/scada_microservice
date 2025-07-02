@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@2.2.1/dist/chartjs-plugin-annotation.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+    <title>CIRCUTOR | EMEMSA</title>
+    <style>
+    </style>
+</head>
+<body>
+    {% include 'header.html' %}
+    <main>
+        <div class="container-fluid px-lg-3 mt-3">
+            <div class="row gap-4">
+                <div class="col-12 col-lg border border-2 rounded-2 px-2 py-2">
+                    <div class="container-fluid">
+                        <div class="row">
+                            {% include 'indicadorHoy.html' %}
+                            <div class="col-6 d-flex align-content-center align-items-center">
+                                <div class="col-12">
+                                    <canvas id="myDynamicBarChart" width="250" height="70"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-lg border border-2 rounded-2 px-2 py-2">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-6 fw-medium">
+                                <span>Mes</span> <br>
+                                <span><span id="kwh_mes" class="fs-3">- - </span><sub style="color: darkgray;"> kwh</sub></span><br>
+                                <span><span>S/.</span><span id="soles_mes">---</span><sub style="color: darkgray;"> soles</sub></span>
+                            </div>
+                            <div class="col-6 d-flex align-content-center align-items-center">
+                                <div class="col-12">
+                                    <canvas id="myChartMes" width="250" height="70"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-lg border border-2 rounded-2 px-3 py-2">c</div>
+                <div class="col-12 col-lg border border-2 rounded-2 px-3 py-2">d</div>
+            </div>
+        </div>
+        <div class="container-fluid px-lg-3 mt-3">
+            <div class="row gap-4">
+                <div class="col-lg-7 col-12 border border-2 rounded-2 p-2">
+                    <div class="col-lg-12 d-flex align-items-center align-content-center" >
+                        <div class="col-lg-4">
+                            <p class="fw-medium">Evaluación de consumo</p>
+                        </div>
+                        <div class="col-lg-4 text-end">
+                            <label for="unidades">Unidades:</label>
+                            <select name="" id="unidades">
+                                <option value="">kwh</option>
+                                <option value="">soles</option>
+                            </select>
+                        </div>
+                        <div class="col-lg-4 text-end">
+                            <label for="groupRange">Agrupado por:</label>
+                            <select name="" id="groupRange">
+                                <option value="">Dia</option>
+                                <option value="">Hora</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-12">
+                        <canvas id="produccionChart" width="200" height="400" class="pb-4"></canvas>
+                    </div>
+                </div>
+                <div class="col-lg col-12 border border-2 rounded-2 p-2">
+                    <div class="col-lg-12"><p>encabezado2</p> </div>
+                    <div class="col-lg-12">
+                        contenido
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer>
+        {% include 'generarGrafico.html' %}
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js" integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous"></script>
+        <script>
+            function getFechaHoy() {
+            const today = new Date();
+            const yesterday = new Date(today.getTime());
+            return yesterday.toISOString().split('T')[0]; // Formato ISO (yyyy-mm-dd)
+            }
+            async function fecthDataCircutor() {
+                const fecha = new Date();
+                const mes = fecha.getMonth() + 1
+                const anio = fecha.getFullYear()
+                const fecIni = getFechaHoy()
+                const fecFin = getFechaHoy()
+                const energia230ApiUrl = `http://192.168.252.99:8009/api/230vac/${fecIni}/${fecFin}/0/`
+                const energia460ApiUrl = `http://192.168.252.99:8009/api/460vac/${fecIni}/${fecFin}/0/`
+                const conMes230ApiUrl = `http://192.168.252.99:8010/api/230vac/${anio}/${mes}/`
+                const conMes460ApiUrl = `http://192.168.252.99:8010/api/460vac/${anio}/${mes}/`
+                const historicoApiUrl = 'http://192.168.252.99:8011/data/historico/dia'
+
+                console.log("conectado URL ENERGIA230",energia230ApiUrl);
+                console.log("conectado URL ENERGIA460",energia460ApiUrl);
+                console.log("conectado URL conMes230",conMes230ApiUrl);
+                console.log("conectado URL conMes460",conMes460ApiUrl);
+                console.log("conectado URL historicoApiUrl",historicoApiUrl);
+
+                try{
+                    const requests = [
+                        energia230ApiUrl,
+                        energia460ApiUrl,
+                        conMes230ApiUrl,
+                        conMes460ApiUrl,
+                        historicoApiUrl,
+                    ];
+
+                    const results = await Promise.all(requests.map(async url => {
+                        try {
+                            const response = await fetch(url);
+                            if (!response.ok) {
+                                const errorText = await response.text();
+                                throw new Error(`Error HTTP (${url.split('/')[4]}): ${response.status} - ${errorText}`);
+                            }
+                            return await response.json();
+                        } catch (error) {
+                            console.error(`Error al obtener datos de ${url}:`, error);
+                            // Retorna un objeto de error o null/undefined para indicar la falla
+                            return { error: true, message: error.message, url: url };
+                        }
+                    }));
+                    const [energia230Data, energia460Data, conMes230Data, conMes460Data, historicoData] = results;
+                    const sumakhw_hoy = energia230Data.data + energia460Data.data
+                    const sumakhw_mes = conMes230Data.data + conMes460Data.data
+                    if (!historicoData.error) {
+                    console.log('Datos de historicoData:', historicoData);
+                    initChart(historicoData)
+                    } else {
+                        console.warn('historicoData: No se pudieron obtener los datos.', historicoData.message);
+                    }
+                    if (!energia230Data.error) {
+                    console.log('Datos de Horas Trabajo:', energia230Data);
+                    } else {
+                        console.warn('Horas Trabajo: No se pudieron obtener los datos.', energia230Data.message);
+                    }
+                    if (!energia460Data.error) {
+                    console.log('Datos de Horas Trabajo:', energia460Data);
+                    } else {
+                        console.warn('Horas Trabajo: No se pudieron obtener los datos.', energia460Data.message);
+                    }
+                    if (!conMes230Data.error) {
+                    console.log('Datos de Horas Trabajo:', conMes230Data);
+                    } else {
+                        console.warn('Horas Trabajo: No se pudieron obtener los datos.', conMes230Data.message);
+                    }
+                    if (!conMes460Data.error) {
+                    console.log('Datos de Horas Trabajo:', conMes460Data);
+                    } else {
+                        console.warn('Horas Trabajo: No se pudieron obtener los datos.', conMes460Data.message);
+                    }
+                    if (!sumakhw_hoy.error) {
+                        indicador_kwh(sumakhw_hoy, energia230Data.data, energia460Data.data, 37.26, 'kwh_hoy', 'soles_hoy', 'myDynamicBarChart')
+                    console.log('Dato suma de khw x celda:', sumakhw_hoy);
+                    } else {
+                        console.warn('Horas Trabajo: No se pudieron obtener los datos.', sumakhw_hoy.message);
+                    }
+                    if (!sumakhw_mes.error) {
+                        indicador_kwh(sumakhw_mes, conMes230Data.data, conMes460Data.data, 37.26, 'kwh_mes', 'soles_mes', 'myChartMes')
+                    console.log('Dato suma de khw x celda:', sumakhw_mes);
+                    } else {
+                        console.warn('Horas Trabajo: No se pudieron obtener los datos.', sumakhw_mes.message);
+                    }
+                }catch (error) {
+                console.error('Error general al procesar los datos combinados:', error);
+                console.log(`Hubo un error inesperado: ${error.message}`, 'danger');
+                }
+            }   
+        </script>
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+            fecthDataCircutor()
+            setInterval(() => {
+            // Llama a fecthDataCircutor para obtener los datos más recientes
+            fecthDataCircutor();
+            }, 30000);
+        });
+        </script>
+        <script>
+            let myChart;
+            function initChart(initialProduccionData = {}) {
+                if (myChart) {
+                    myChart.destroy();
+                }
+
+                const ctx = document.getElementById('produccionChart').getContext('2d');
+
+                // Preparar las etiquetas del eje X (comunes para ambos datasets)
+                // Es crucial que las etiquetas de tiempo sean consistentes entre ambos datasets.
+                // Aquí tomamos las fechas de los datos de producción como base para las etiquetas.
+                labels = [];
+                labels = initialProduccionData.map(item => item.fecha)
+
+                // Preparar los datos para el dataset de Producción
+                const produccionFormatted = initialProduccionData.map(item => ({
+                    x: item.fecha,
+                    y: item.valor
+                }));
+
+                let configX = {
+                    type: 'time', // CLAVE: Escala de tiempo para alinear correctamente los puntos
+                    time: {
+                        unit: 'day',
+                        //displayFormats: {
+                        //    minute: 'HH:mm'
+                        //}
+                    },
+                    //min:minTime,
+                    title: { display: true, text: 'Tiempo' },
+                    ticks: {
+                        maxRotation: 45,
+                        minRotation: 45,
+                        display: true // Asegura que las etiquetas se muestren
+                    }
+                };
+
+                myChart = new Chart(ctx, {
+                    type: 'bar', // Tipo de gráfico de línea
+                    data: {
+                        labels: labels, // Etiquetas para el eje X (tiempo)
+                        datasets: [
+                            {
+                                label: 'Energía (kwh)', // Título de la serie de datos de producción
+                                data: produccionFormatted, // Valores para el eje Y
+                                borderColor: 'rgba(25, 148, 121, 0.9)', // Color de la línea de producción
+                                backgroundColor: 'rgb(25, 148, 121)', // Color del área bajo la línea
+                                //tension: 0.1, // Suavidad de la línea
+                                //fill: true, // Rellenar el área bajo la línea
+                                yAxisID: 'y',
+                                borderWidth: 1,
+                                borderRadius : 5
+                            },
+                            
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false, // Importante para controlar el tamaño con CSS
+                        plugins: {
+                            //title: {
+                            //    display: true,
+                            //    text: "titulo grafico", // Título principal del gráfico
+                            //    font: {
+                            //        size: 18
+                            //    }
+                            //},
+                            //annotation: {
+                            //    annotations: {
+                            //        lineaTendencia: { // Un ID único para tu anotación
+                            //            type: 'line',
+                            //            scaleID: 'y1', // <--- ¡CAMBIAR AQUÍ! Apunta al eje y1
+                            //            value: cantidadStd, // El valor en el eje y1 donde se dibujará la línea
+                            //            borderColor: 'black',
+                            //            borderWidth: 2,
+                            //            label: { // Opcional: Para mostrar una etiqueta en la línea
+                            //                display: true,
+                            //                content: `Meta Producción ${cantidadStd}`,
+                            //                position: 'end', // Puedes probar 'start', 'end', 'center'
+                            //                color: 'black',
+                            //                backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                            //                font: {
+                            //                    size: 12
+                            //                }
+                            //            }
+                            //        }
+                            //    }
+                            //},
+                            legend: {
+                                display: false,
+                                position: 'top',
+                            }
+                        },
+                        animation: false,
+                        scales: {
+                            x: configX,
+                            y: { // Primer eje Y para Producción
+                                //stacked: true,
+                                type: 'linear',
+                                display: true,
+                                position: 'left',
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Consumo Energía (kwh)'
+                                }
+                            },
+                        }
+                    }
+                });
+                }
+        </script>
+    </footer>
+</body>
+</html>

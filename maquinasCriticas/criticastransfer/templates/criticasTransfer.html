@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@2.2.1/dist/chartjs-plugin-annotation.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+    <title>CRITICAS TRANSFER | EMEMSA</title>
+</head>
+<body onload="initDashboard()">
+    <header class="mb-3">
+        {% include 'header.html' %}
+    </header>
+    <main>
+        <div class="container-fluid">
+            <div id="chartsContainer" class="row">
+                <div class="col-12 position-relative">
+                    {% include 'multiIndicador.html' %}
+                    {% include 'multipleChart.html' %}
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js" integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous"></script>
+        <script>
+            // Función para obtener y renderizar un gráfico para una máquina específica
+            // En multi-machine-dashboard.html
+            async function fetchAndRenderMachineChart(area, codmaq, fecIni, fecFin, canvasId) {
+                const encodedCodmaq = encodeURIComponent(codmaq);
+                const encendidoApiUrl = `http://192.168.252.99:8004/api/${area}/${encodedCodmaq}/${fecIni}/${fecFin}/7/`;
+                const produccionApiUrl = `http://192.168.252.99:8002/api/${area}/${encodedCodmaq}/${fecIni}/${fecFin}/7/`;
+                const horasEncendidoApiUrl = `http://192.168.252.99:8005/api/${area}/${encodedCodmaq}/${fecIni}/${fecFin}/7/`;
+                const acumuladoApiUrl = `http://192.168.252.99:8001/api/${area}/${encodedCodmaq}/${fecIni}/${fecFin}/7/`;
+                const horasTrabaApiUrl = `http://192.168.252.99:8003/api/${area}/${encodedCodmaq}/${fecIni}/${fecFin}/7/`;
+                const generalDataApiUrl = `http://192.168.252.99:8006/data/${encodedCodmaq}/`;
+
+                console.log('URL Encendido:', encendidoApiUrl);
+                console.log('URL Producción:', produccionApiUrl);
+                console.log('URL horasEncendido:', horasEncendidoApiUrl);
+                console.log('URL generalDataApiUrl:', generalDataApiUrl);
+                console.log('URL acumuladoApiUrl:', acumuladoApiUrl);
+                console.log('URL horasTrabaApiUrl:', horasTrabaApiUrl);
+
+                //document.getElementById('extractButton').textContent = 'Extrayendo...';
+                //document.getElementById('extractButton').disabled = true;
+
+                try {
+                    const requests = [
+                        encendidoApiUrl,
+                        produccionApiUrl,
+                        horasEncendidoApiUrl,
+                        generalDataApiUrl,
+                        acumuladoApiUrl,
+                        horasTrabaApiUrl
+                    ];
+
+                    // Mapea cada URL a una promesa que siempre se resolverá,
+                    // ya sea con los datos o con un error.
+                    const results = await Promise.all(requests.map(async url => {
+                        try {
+                            const response = await fetch(url);
+                            if (!response.ok) {
+                                const errorText = await response.text();
+                                throw new Error(`Error HTTP (${url.split('/')[4]}): ${response.status} - ${errorText}`);
+                            }
+                            return await response.json();
+                        } catch (error) {
+                            console.error(`Error al obtener datos de ${url}:`, error);
+                            // Retorna un objeto de error o null/undefined para indicar la falla
+                            return { error: true, message: error.message, url: url };
+                        }
+                    }));
+
+                    const [encendidoData, produccionData, horasEncendidoData, generalDataDB, acumuladoData, horasTrabaData] = results;
+
+                    // Procesa solo los datos que no tuvieron errores
+                    let produccionFormatted = []; // Inicializa con valores predeterminados o vacíos
+                    let encendidoFormatted = [];
+                    let codmaq_buscado = '';
+                    let acum = '';
+                    let cantidadStd = null;
+
+                    if (!produccionData.error) {
+                        produccionFormatted = produccionData.produccion_por_hora;
+                        codmaq_buscado = produccionData.codmaq_buscado;
+                        console.log('Datos de Producción:', produccionData);
+                    } else {
+                        console.warn('Producción: No se pudieron obtener los datos. Se usará un valor por defecto o se ignorará.', produccionData.message);
+                    }
+
+                    if (!encendidoData.error) {
+                        encendidoFormatted = encendidoData.encendido_apagado;
+                        console.log('Datos de Encendido:', encendidoData);
+                    } else {
+                        console.warn('Encendido: No se pudieron obtener los datos. Se usará un valor por defecto o se ignorará.', encendidoData.message);
+                    }
+
+                    if (!generalDataDB.error) {
+                        cantidadStd = generalDataDB.cantidadStd;
+                        //infoOrden(generalDataDB)
+                        console.log('Datos de generalDataDB:', generalDataDB);
+                    } else {
+                        console.warn('General Data: No se pudieron obtener los datos. Se usará un valor por defecto o se ignorará.', generalDataDB.message);
+                    }
+                    if (!acumuladoData.error) {
+                        acumulado = acumuladoData.acumulado
+                        //disponibilidad(acumuladoData);
+                        console.log('Datos de Conteo Acumulado:', acumuladoData);
+                    } else {
+                        console.warn('Conteo Acumulado: No se pudieron obtener los datos.', acumuladoData.message);
+                    }
+                    if (!horasEncendidoData.error) {
+                        //horasEncendido(horasEncendidoData,acumulado);
+                        console.log('Datos de Horas Encendido:', horasEncendidoData);
+                    } else {
+                        console.warn('Horas Encendido: No se pudieron obtener los datos.', horasEncendidoData.message);
+                    }
+                    if (!horasTrabaData.error) {
+                    //disponibilidad(horasTrabaData);
+                    console.log('Datos de Horas Trabajo:', horasTrabaData);
+                    } else {
+                        console.warn('Horas Trabajo: No se pudieron obtener los datos.', horasTrabaData.message);
+                    }
+
+                    // Llama a la función para actualizar los indicadores
+                    horasEncendido(horasEncendidoData, acumulado, canvasId, horasTrabaData, cantidadStd); // Pasa canvasId como machineDisplayId
+
+                    // Llama a la función initChart con el ID del canvas específico
+                    initChart(canvasId, codmaq, produccionFormatted, encendidoFormatted, cantidadStd);
+
+                } catch (error) {
+                    console.error(`Error al obtener datos para ${codmaq} en el canvas ${canvasId}:`, error);
+                    const chartWrapper = document.getElementById(canvasId).closest('.chart-wrapper');
+                    if (chartWrapper) {
+                        chartWrapper.innerHTML = `<p class="text-danger">Error al cargar datos para ${codmaq}.</p>`;
+                    }
+                }
+            }
+
+            // Función principal para inicializar el dashboard con máquinas específicas
+            async function initDashboard() {
+                // Define aquí las máquinas que quieres mostrar
+                const machinesToDisplay = [
+                    { area: 'SERIADA', codmaq: 'TTV 001E', displayId: 'chartTTV001E' },
+                    { area: 'SERIADA', codmaq: 'TTV 002E', displayId: 'chartTTV002E' },
+                    { area: 'SERIADA', codmaq: 'TTV 003E', displayId: 'chartTTV003E' },
+                    { area: 'SERIADA', codmaq: 'TTV 004E', displayId: 'chartTTH004E' },
+                    // Añade más objetos para cada máquina que necesites
+                ];
+
+                const chartsContainer = document.getElementById('chartsContainer');
+                const fecha = new Date();
+                const año = fecha.getFullYear();
+                const mes = (fecha.getMonth() + 1).toString().padStart(2, '0');
+                const dia = fecha.getDate().toString().padStart(2, '0');
+                const dateHoy = `${año}-${mes}-${dia}`;
+                const today = dateHoy; // Usa `obtenerDiaActual().split(' ')[0]` si quieres la fecha actual
+
+                for (const machine of machinesToDisplay) {
+                    // Crea un contenedor para cada gráfico
+                    const chartWrapper = document.createElement('div');
+                    chartWrapper.classList.add('col-md-6', 'mb-4', 'chart-wrapper'); // Clases para el grid de Bootstrap
+                    chartWrapper.innerHTML = `
+                    <div class="rounded rounded-2 shadow-lg p-3 position-relative" style="height: 300px;">
+                        <div id="contenedor_on_${machine.displayId}" class="col position-absolute top-0 bg-success fw-bold rounded rounded-2 text-white text-center px-3 d-flex flex-column" style="left: 10px;">
+                            <span id="hencendido_${machine.displayId}">h..</span>
+                            <span>ON:</span>
+                        </div>
+                        <div id="contenedor_off_${machine.displayId}" class="col position-absolute bottom-0 bg-danger fw-bold rounded rounded-2 text-white text-center px-3 d-flex flex-column" style="left: 10px;">
+                            <span>OFF:</span> 
+                            <span id="hapagado_${machine.displayId}">h..</span>
+                        </div>
+                        <div id="conteo_${machine.displayId}" class="col position-absolute top-0 end-0 bg-white border border-2 border-dark fw-bold rounded rounded-2 text-center px-3">
+                            <span>Conteo:</span> 
+                            <span id="acumulado_${machine.displayId}">...</span>
+                        </div>
+                        <div id="indi_${machine.displayId}" class="col position-absolute bottom-0 end-0 bg-white border border-2 border-dark fw-bold rounded rounded-2 text-center px-3">
+                            <span>Rend:</span> 
+                            <span id="rend_${machine.displayId}">...</span>
+                        </div>
+                        <canvas id="${machine.displayId}" class="pb-4"></canvas>
+                    </div>
+                    `;
+                    chartsContainer.appendChild(chartWrapper);
+
+                    // Llama a la función para obtener datos y renderizar el gráfico para esta máquina
+                    await fetchAndRenderMachineChart(
+                        machine.area,
+                        machine.codmaq,
+                        today, // Fecha de inicio (puedes hacerla dinámica)
+                        today, // Fecha de fin (puedes hacerla dinámica)
+                        machine.displayId
+                    );
+                    
+                    // Configura la llamada repetitiva cada 5 segundos
+                    setInterval(() => {
+                        fetchAndRenderMachineChart(
+                            machine.area,
+                            machine.codmaq,
+                            today,
+                            today,
+                            machine.displayId
+                        );
+                    }, 5000); // 5000 milisegundos = 5 segundos
+
+                }
+            }
+
+        </script>
+    </footer>
+</body>
+</html>

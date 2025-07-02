@@ -1,0 +1,226 @@
+
+<script>
+    // Variable global para la instancia del gráfico
+    //let myChart;
+    function obtenerDiaActual() {
+        const fecha = new Date();
+    
+        // Obtener las partes de la fecha y hora
+        const año = fecha.getFullYear();
+        const mes = (fecha.getMonth() + 1).toString().padStart(2, '0');
+        const dia = fecha.getDate().toString().padStart(2, '0');
+        const hora = fecha.getHours().toString().padStart(2, '0');
+        const minuto = fecha.getMinutes().toString().padStart(2, '0');
+        const segundo = fecha.getSeconds().toString().padStart(2, '0'); // <-- ¡Añadir padStart aquí!
+
+    
+        // Formatear la fecha y hora
+        const fechasieteAM = `${año}-${mes}-${dia} ${hora}:${minuto}:${segundo}`;
+    
+        return fechasieteAM;
+    }
+    // Función para inicializar el gráfico
+    function initChart(canvasId, codmaq, initialProduccionData = [], initialEncendidoData = [], cantidadStd) {
+
+        let currentTime = obtenerDiaActual()
+        //console.log("currentTime",currentTime);
+        // Destruye el gráfico existente si ya hay uno en el canvas
+        const existingChart = Chart.getChart(canvasId); // Usa Chart.getChart para obtener la instancia por ID
+        if (existingChart) {
+            existingChart.destroy();
+        }
+
+        const ctx = document.getElementById(canvasId).getContext('2d'); // Usa el ID del canvas pasado
+
+        // Preparar las etiquetas del eje X (comunes para ambos datasets)
+        // Es crucial que las etiquetas de tiempo sean consistentes entre ambos datasets.
+        // Aquí tomamos las fechas de los datos de producción como base para las etiquetas.
+        labels = [];
+        labels = initialEncendidoData.map(item => item.fecha)
+
+        // Preparar los datos para el dataset de Producción
+        const produccionFormatted = initialProduccionData.map(item => ({
+            x: item.fecha,
+            y: item.pxh
+        }));
+
+        const encendidoFormatted = initialEncendidoData.map(item => ({
+            x: item.fecha,
+            y: item.valor
+        }));
+        let configX = {
+            type: 'time', // CLAVE: Escala de tiempo para alinear correctamente los puntos
+            time: {
+                unit: 'minute', // Unidad de tiempo base para el eje
+                //stepSize: 3, // Saltos de 3 horas
+                tooltipFormat: 'MM-dd HH:mm:ss', // Formato de la hora en el tooltip
+                displayFormats: {
+                    hour: 'HH:mm',
+                    day: 'MMM dd' // Si el rango es de varios días
+                }
+            },
+            //min:minTime,
+            title: { display: true, text: 'Tiempo' },
+            ticks: {
+                maxRotation: 45,
+                minRotation: 45,
+                display: true // Asegura que las etiquetas se muestren
+            }
+        };
+        const firstEncendido = encendidoFormatted[0]
+        const lastEncendido = encendidoFormatted[encendidoFormatted.length - 1]
+        //lastEncendido = undefined ? console.log(lastEncendido) : "NO DATOS"
+        if(lastEncendido != undefined ) {
+            const dia1 = firstEncendido.x.split(' ')[0];
+            const dia2 = currentTime.split(' ')[0];
+            const rptaONOFF = lastEncendido.y == 1 ? "1" : "0"
+            // Usa los IDs únicos para los contenedores ON/OFF
+            const contenedor_on = document.getElementById(`contenedor_on_${canvasId}`);
+            const contenedor_off = document.getElementById(`contenedor_off_${canvasId}`);
+
+            if (contenedor_on && contenedor_off) { // Verifica si los elementos existen para esta máquina
+                if (lastEncendido.y == 1) {
+                    contenedor_on.classList.remove('bg-white', 'text-black');
+                    contenedor_off.classList.remove('bg-danger', 'text-white');
+                    contenedor_on.classList.add('bg-success', 'text-white');
+                    contenedor_off.classList.add('bg-white', 'text-black');
+                } else {
+                    contenedor_off.classList.remove('bg-white', 'text-black');
+                    contenedor_on.classList.remove('bg-success', 'text-white');
+                    contenedor_off.classList.add('bg-danger', 'text-white');
+                    contenedor_on.classList.add('bg-white', 'text-black');
+                }
+            }
+
+            const newDate = {
+                "x" : currentTime,
+                "y" : rptaONOFF
+            }
+            
+            if(dia1 == dia2) {
+                encendidoFormatted.push(newDate)
+                let today = new Date();
+                //let hora = today.getHours()
+                let minTime = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 7, 0, 0);
+                configX.min = minTime
+            }
+        } else {
+            const contenedor_on = document.getElementById(`contenedor_on_${canvasId}`);
+            const contenedor_off = document.getElementById(`contenedor_off_${canvasId}`);
+            if (contenedor_on && contenedor_off) {
+                contenedor_off.classList.remove('bg-white', 'text-black');
+                contenedor_on.classList.remove('bg-success', 'text-white');
+                contenedor_off.classList.add('bg-danger', 'text-white');
+                contenedor_on.classList.add('bg-white', 'text-black');
+            }
+        }
+
+        myChart = new Chart(ctx, {
+            type: 'line', // Tipo de gráfico de línea
+            data: {
+                labels: labels, // Etiquetas para el eje X (tiempo)
+                datasets: [
+                    {
+                        label: 'Producción (Pxh)', // Título de la serie de datos de producción
+                        data: produccionFormatted, // Valores para el eje Y
+                        borderColor: 'rgb(240, 57, 105)', // Color de la línea de producción
+                        backgroundColor: 'rgba(240, 57, 105, 0.2)', // Color del área bajo la línea
+                        tension: 0.1, // Suavidad de la línea
+                        fill: true, // Rellenar el área bajo la línea
+                        pointRadius: 4, // Tamaño de los puntos
+                        pointHoverRadius: 6, // Tamaño de los puntos al pasar el ratón
+                        yAxisID: 'y1',
+                    },
+                    {
+                        label: 'Encendido (Valor)', // Título de la serie de datos de encendido
+                        data: encendidoFormatted, // Valores para el eje Y
+                        borderColor: 'rgb(0, 255, 0)', // Color de la línea de encendido
+                        backgroundColor: 'rgba(0, 255, 0, 0.1)', // Color del área bajo la línea
+                        //tension: 0.3,
+                        fill: true,
+                        stepped :true,
+                        pointRadius: 4,
+                        pointHoverRadius: 6,
+                        yAxisID: 'y'
+                    },
+                    
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false, // Importante para controlar el tamaño con CSS
+                plugins: {
+                    title: {
+                        display: true,
+                        text: codmaq, // Título principal del gráfico
+                        font: {
+                            size: 18
+                        }
+                    },
+                    annotation: {
+                        annotations: {
+                            lineaTendencia: { // Un ID único para tu anotación
+                                type: 'line',
+                                scaleID: 'y1', // <--- ¡CAMBIAR AQUÍ! Apunta al eje y1
+                                value: cantidadStd, // El valor en el eje y1 donde se dibujará la línea
+                                borderColor: 'black',
+                                borderWidth: 2,
+                                label: { // Opcional: Para mostrar una etiqueta en la línea
+                                    display: true,
+                                    content: `Meta Producción ${cantidadStd}`,
+                                    position: 'end', // Puedes probar 'start', 'end', 'center'
+                                    color: 'black',
+                                    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                                    font: {
+                                        size: 12
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    legend: {
+                        display: true,
+                        position: 'top',
+                    }
+                },
+                animation: false,
+                scales: {
+                    x: configX,
+                    y1: { // Primer eje Y para Producción
+                        //stacked: true,
+                        type: 'linear',
+                        display: true,
+                        position: 'right',
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Producción (Pxh)'
+                        }
+                    },
+                    y: { // Segundo eje Y para Encendido
+                        type: 'linear',
+                        display: true,
+                        position: 'left', // Coloca el segundo eje a la derecha
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Encendido (Valor)'
+                        },
+                        // Opcional: Asegúrate de que este eje se escala correctamente para tus valores de encendido (ej. 0 o 1)
+                        // Si tus valores son solo 0 y 1, podrías fijar min/max o ticks.
+                        // Por ejemplo:
+                         min: 0,
+                         max: 1,
+                         ticks: {
+                             stepSize: 1
+                         },
+                        grid: {
+                            drawOnChartArea: false // Evita que las líneas de la cuadrícula de este eje se dibujen sobre el gráfico
+                        }
+                    }
+                }
+            }
+        });
+    }
+    
+</script>

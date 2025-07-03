@@ -30,11 +30,11 @@
             // En multi-machine-dashboard.html
             async function fetchAndRenderMachineChart(area, codmaq, fecIni, fecFin, canvasId) {
                 const encodedCodmaq = encodeURIComponent(codmaq);
-                const encendidoApiUrl = `http://192.168.252.99:8004/api/${area}/${encodedCodmaq}/${fecIni}/${fecFin}/7/`;
-                const produccionApiUrl = `http://192.168.252.99:8002/api/${area}/${encodedCodmaq}/${fecIni}/${fecFin}/7/`;
-                const horasEncendidoApiUrl = `http://192.168.252.99:8005/api/${area}/${encodedCodmaq}/${fecIni}/${fecFin}/7/`;
-                const acumuladoApiUrl = `http://192.168.252.99:8001/api/${area}/${encodedCodmaq}/${fecIni}/${fecFin}/7/`;
-                const horasTrabaApiUrl = `http://192.168.252.99:8003/api/${area}/${encodedCodmaq}/${fecIni}/${fecFin}/7/`;
+                const encendidoApiUrl = `http://192.168.252.99:8004/api/${area}/${encodedCodmaq}/${fecIni}/${fecFin}/7/00/23/59/`;
+                const produccionApiUrl = `http://192.168.252.99:8002/api/${area}/${encodedCodmaq}/${fecIni}/${fecFin}/7/00/23/59/`;
+                const horasEncendidoApiUrl = `http://192.168.252.99:8005/api/${area}/${encodedCodmaq}/${fecIni}/${fecFin}/7/00/23/59/`;
+                const acumuladoApiUrl = `http://192.168.252.99:8001/api/${area}/${encodedCodmaq}/${fecIni}/${fecFin}/7/00/23/59/`;
+                const horasTrabaApiUrl = `http://192.168.252.99:8003/api/${area}/${encodedCodmaq}/${fecIni}/${fecFin}/7/00/23/59/`;
                 const generalDataApiUrl = `http://192.168.252.99:8006/data/${encodedCodmaq}/`;
 
                 console.log('URL Encendido:', encendidoApiUrl);

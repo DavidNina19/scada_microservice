@@ -20,6 +20,6 @@ from horaonoff.views import HorasEncendidasAPIView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/<str:area>/<str:codmaq>/<str:fecha_inicio_str>/<str:fecha_fin_str>/<str:hora_inicio_str>/', HorasEncendidasAPIView.as_view(), name='produccionhora'),
+    path('api/<str:area>/<str:codmaq>/<str:fecha_inicio_str>/<str:fecha_fin_str>/<str:hora_inicio_str>/<str:minute_inicio_str>/<str:hora_fin_str>/<str:minute_fin_str>/', HorasEncendidasAPIView.as_view(), name='produccionhora'),
 
 ]

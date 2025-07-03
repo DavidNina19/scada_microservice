@@ -18,8 +18,8 @@ class DataQueryAPIView(APIView):
     Recibe 'area', 'codmaq', 'fecha_inicio_str', 'fecha_fin_str', y 'hora_inicio_str' como parámetros de la URL.
     Devuelve el conteo acumulado.
     """
-    def get(self, request, area, codmaq, fecha_inicio_str, fecha_fin_str, hora_inicio_str, *args, **kwargs):
-        if not area or not codmaq or not fecha_inicio_str or not fecha_fin_str or not hora_inicio_str:
+    def get(self, request, area, codmaq, fecha_inicio_str, fecha_fin_str, hora_inicio_str, minute_inicio_str, hora_fin_str, minute_fin_str, *args, **kwargs):
+        if not area or not codmaq or not fecha_inicio_str or not fecha_fin_str or not hora_inicio_str or not minute_inicio_str or not hora_fin_str or not minute_fin_str:
             return Response(
                 {"error": "Los parámetros 'area', 'codmaq', 'fechaInicio', 'fechaFin' y 'horaInicio' son requeridos en la URL."},
                 status=status.HTTP_400_BAD_REQUEST
@@ -74,11 +74,21 @@ class DataQueryAPIView(APIView):
             start_hour = int(hora_inicio_str)
             if not (0 <= start_hour <= 23):
                 raise ValueError("La hora de inicio debe ser un número entre 0 y 23.")
+            start_minute = int(minute_inicio_str)
+            if not (0 <= start_minute <= 60):
+                raise ValueError("La hora de inicio debe ser un número entre 0 y 23.")
+            # Parsear la hora de inicio
+            end_hour = int(hora_fin_str)
+            if not (0 <= end_hour <= 23):
+                raise ValueError("La hora de fin debe ser un número entre 0 y 23.")
+            end_minute = int(minute_fin_str)
+            if not (0 <= end_minute <= 60):
+                raise ValueError("La hora de inicio debe ser un número entre 0 y 23.")
 
             # Combinar la fecha de inicio con la hora de inicio proporcionada
-            start_datetime = datetime.combine(start_date_only, time(start_hour, 0, 0))
+            start_datetime = datetime.combine(start_date_only, time(start_hour, start_minute, 0))
             # La fecha fin siempre será hasta el final del día
-            end_datetime = datetime.combine(end_date_only, time(23, 59, 59, 999999))
+            end_datetime = datetime.combine(end_date_only, time(end_hour, end_minute, 59, 999999))
 
 
             # Filtro base: t_stamp dentro del rango de fechas y horas
